@@ -149,6 +149,7 @@
 
         .text-green { color: #16a34a; font-weight: bold; }
         .text-red { color: #dc2626; font-weight: bold; }
+        
     </style>
 </head>
 <body>
@@ -159,7 +160,7 @@
     <a href="/pemasukan">Pemasukan</a>
     <a href="/pengeluaran">Pengeluaran</a>
     <a href="/catatan">Catatan</a>
-    <a href="/setting">Setting</a>
+    <a href="/user">User</a>
 </div>
 
 <div class="main">

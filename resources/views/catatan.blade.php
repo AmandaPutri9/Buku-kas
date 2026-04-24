@@ -123,6 +123,7 @@
     <a href="/pemasukan">Pemasukan</a>
     <a href="/pengeluaran">Pengeluaran</a>
     <a href="/catatan" class="active"><strong>Catatan</strong></a>
+    <a href="/user">User</a>
 </div>
 
 <div class="main">

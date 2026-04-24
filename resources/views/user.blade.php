@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pengeluaran</title>
+    <title>Settings User</title>
+
     <style>
         body {
             margin: 0;
@@ -68,18 +69,19 @@
 
         .header {
             margin-bottom: 20px;
+            font-size: 28px;
         }
 
-        .form-box, .table-box {
+        .box {
             background: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         input {
-            width: 100%;
+            width: 90%;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 8px;
@@ -93,46 +95,64 @@
             cursor: pointer;
         }
 
-        .btn-add { background: #0ea5e9; color: white; }
-        .btn-delete { background: #ef4444; color: white; }
-        .btn-edit { background: #f59e0b; color: white; }
-        .btn-update { background: #22c55e; color: white; }
+        .add {
+            background: #0ea5e9;
+            color: white;
+        }
 
-        table {
+        .edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .delete {
+            background: #ef4444;
+            color: white;
+        }
+
+       table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         th, td {
-            padding: 7px;
+            padding: 10px;
             border-bottom: 1px solid #eee;
+            font-size: 13px;
         }
 
         th {
             background: #0ea5e9;
             color: white;
+            font-size: 13px;
         }
 
         tr:hover {
             background: #f1f5f9;
         }
+
+        td:last-child {
+            white-space: nowrap;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="sidebar">
     <h2>Buku Kas</h2>
     <a href="/dashboard">Dashboard</a>
     <a href="/pemasukan">Pemasukan</a>
-    <a href="/pengeluaran" class="active"><strong>Pengeluaran</strong></a>
+    <a href="/pengeluaran">Pengeluaran</a>
     <a href="/catatan">Catatan</a>
-    <a href="/user">User</a>
+    <a href="/user" class="active"><strong>User</strong></a>
 </div>
 
 <div class="main">
 
     <div class="navbar">
-        <div><strong>Pengeluaran</strong></div>
+        <div><strong>Settings User</strong></div>
 
         <form method="POST" action="/logout">
             @csrf
@@ -142,79 +162,67 @@
 
     <div class="container">
 
-        <div class="header">
-            <h3>Data Pengeluaran</h3>
-        </div>
+        <div class="header"><strong>Manajemen User</strong</div>
 
-        <div class="form-box">
-            <form method="POST" action="/pengeluaran">
+        <div class="box">
+            <form method="POST" action="/user">
                 @csrf
-                <input type="date" name="tanggal" required>
-                <input type="text" name="keterangan" placeholder="Keterangan" required>
-                <input type="number" name="jumlah" placeholder="Jumlah" required>
-                <button class="btn-add">Tambah Pengeluaran</button>
+
+                <input type="text" name="name" placeholder="Nama" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+
+                <button class="add">Tambah User</button>
             </form>
         </div>
 
-        <div class="table-box">
-            <h4>Daftar Pengeluaran</h4>
-
+        <div class="box">
             <table>
                 <tr>
-                    <th>Tanggal</th>
-                    <th>Keterangan</th>
-                    <th>Jumlah</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Password</th>
                     <th>Aksi</th>
                 </tr>
 
                 @foreach($data as $item)
                 <tr>
-                    <td>
-                        <form method="POST" action="/pengeluaran/update/{{ $item->id }}">
-                            @csrf
-                            <span class="text">{{ $item->tanggal }}</span>
-                            <input type="date" name="tanggal" value="{{ $item->tanggal }}" style="display:none;">
-                    </td>
+
+                    <form method="POST" action="/user/update/{{ $item->id }}">
+                    @csrf
 
                     <td>
-                            <span class="text">{{ $item->keterangan }}</span>
-                            <input type="text" name="keterangan" value="{{ $item->keterangan }}" style="display:none;">
+                        <input type="text" name="name" value="{{ $item->name }}">
                     </td>
 
-                    <td style="text-align:right;">
-                            <span class="text">Rp {{ number_format($item->jumlah,0,',','.') }}</span>
-                            <input type="number" name="jumlah" value="{{ $item->jumlah }}" style="display:none;">
+                    <td>
+                        <input type="email" name="email" value="{{ $item->email }}">
                     </td>
 
-                    <td style="text-align:center;">
-                            <button type="button" class="btn-edit" onclick="editRow(this)">Edit</button>
-                            <button type="submit" class="btn-update" style="display:none;">Update</button>
-                        </form>
+                    <td>
+                        <input type="password" name="password" placeholder="••••••">
+                    </td>
 
-                        <form action="/pengeluaran/delete/{{ $item->id }}" method="POST" style="display:inline;">
+                    <td>
+                        <button class="edit" type="submit">Update</button>
+                    </form>
+
+                        <form method="POST" action="/user/delete/{{ $item->id }}" style="display:inline;">
                             @csrf
-                            <button class="btn-delete" onclick="return confirm('Hapus data ini?')">Hapus</button>
+                            <button class="delete" onclick="return confirm('Hapus user ini?')">
+                                Hapus
+                            </button>
                         </form>
                     </td>
+
                 </tr>
                 @endforeach
+
             </table>
         </div>
 
     </div>
 </div>
-
-<script>
-function editRow(btn){
-    let row = btn.closest('tr');
-
-    row.querySelectorAll('.text').forEach(e => e.style.display = 'none');
-    row.querySelectorAll('input').forEach(e => e.style.display = 'block');
-
-    btn.style.display = 'none';
-    row.querySelector('.btn-update').style.display = 'inline-block';
-}
-</script>
 
 </body>
 </html>

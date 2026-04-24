@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Apr 2026 pada 15.29
+-- Waktu pembuatan: 24 Apr 2026 pada 18.21
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -180,7 +180,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'admin@gmail.com', NULL, '$2y$10$cCIi3KZpS4FWW2GhRGK5Z.AGFoo.W6FZsERza35s0E2Tgs6mpevp6', NULL, '2026-04-22 16:05:43', '2026-04-22 16:05:43');
+(1, 'admin', 'admin@gmail.com', NULL, '$2y$10$TJpKqTH2TnukmcyBOnL0guA1wXeNBJHxyaol4KukPwRHzIYuBwsHa', NULL, '2026-04-22 16:05:43', '2026-04-24 08:59:34'),
+(3, 'User', 'user@gmail.com', NULL, '$2y$10$Mzx1nY0RG3qdCesKEfrg1uV4WMN.zGPrQSZcVI9MUsfG8mUd0XYb.', NULL, '2026-04-24 09:02:58', '2026-04-24 09:19:06');
 
 --
 -- Indexes for dumped tables
@@ -282,7 +283,7 @@ ALTER TABLE `personal_access_tokens`
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

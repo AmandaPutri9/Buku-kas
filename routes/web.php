@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 Route::get('/', function () {
     return view('login');
@@ -22,6 +23,7 @@ Route::post('/login', function (Request $request) {
 
     return back()->with('error', 'Email atau password salah');
 });
+
 
 Route::post('/logout', function (Request $request) {
     Auth::logout();
@@ -64,6 +66,7 @@ Route::get('/pemasukan', function () {
 })->middleware('auth');
 
 Route::post('/pemasukan', function (Request $request) {
+
     DB::table('pemasukans')->insert([
         'tanggal' => $request->tanggal,
         'keterangan' => $request->keterangan,
@@ -73,22 +76,28 @@ Route::post('/pemasukan', function (Request $request) {
     ]);
 
     return redirect('/pemasukan');
+
 })->middleware('auth');
 
-Route::post('/pemasukan/delete/{id}', function ($id) {
-    DB::table('pemasukans')->where('id', $id)->delete();
-    return back();
-})->middleware('auth');
-
-Route::post('/pemasukan/update/{id}', function (Illuminate\Http\Request $request, $id) {
+Route::post('/pemasukan/update/{id}', function (Request $request, $id) {
     DB::table('pemasukans')->where('id', $id)->update([
         'tanggal' => $request->tanggal,
         'keterangan' => $request->keterangan,
-        'jumlah' => $request->jumlah
+        'jumlah' => $request->jumlah,
+        'updated_at' => now()
     ]);
 
     return redirect('/pemasukan');
-});
+
+})->middleware('auth');
+
+Route::post('/pemasukan/delete/{id}', function ($id) {
+
+    DB::table('pemasukans')->where('id', $id)->delete();
+    return back();
+
+})->middleware('auth');
+
 
 Route::get('/pengeluaran', function () {
     $data = DB::table('pengeluarans')->orderBy('tanggal','desc')->get();
@@ -107,41 +116,45 @@ Route::post('/pengeluaran', function (Request $request) {
     return redirect('/pengeluaran');
 })->middleware('auth');
 
-Route::post('/pengeluaran/delete/{id}', function ($id) {
-    DB::table('pengeluarans')->where('id', $id)->delete();
-    return back();
-})->middleware('auth');
-
-Route::post('/pengeluaran/update/{id}', function(Request $req, $id){
+Route::post('/pengeluaran/update/{id}', function (Request $req, $id) {
     DB::table('pengeluarans')->where('id', $id)->update([
         'tanggal' => $req->tanggal,
         'keterangan' => $req->keterangan,
-        'jumlah' => $req->jumlah
+        'jumlah' => $req->jumlah,
+        'updated_at' => now()
     ]);
+
+    return redirect('/pengeluaran');
+
+})->middleware('auth');
+
+Route::post('/pengeluaran/delete/{id}', function ($id) {
+
+    DB::table('pengeluarans')->where('id', $id)->delete();
     return back();
-});
+
+})->middleware('auth');
+
 
 Route::get('/catatan', function () {
-    $data = DB::table('catatan')->latest()->get();
+    $data = DB::table('catatan')->orderBy('tanggal','desc')->get();
     return view('catatan', compact('data'));
-});
+
+})->middleware('auth');
 
 Route::post('/catatan', function (Request $request) {
     DB::table('catatan')->insert([
+        'tanggal' => $request->tanggal,
         'isi' => $request->isi,
         'created_at' => now(),
         'updated_at' => now()
     ]);
 
     return redirect('/catatan');
-});
-
-Route::post('/catatan/delete/{id}', function ($id) {
-    DB::table('catatan')->where('id', $id)->delete();
-    return redirect('/catatan');
-});
+})->middleware('auth');
 
 Route::post('/catatan/update/{id}', function (Request $request, $id) {
+
     DB::table('catatan')->where('id', $id)->update([
         'tanggal' => $request->tanggal,
         'isi' => $request->isi,
@@ -149,34 +162,48 @@ Route::post('/catatan/update/{id}', function (Request $request, $id) {
     ]);
 
     return redirect('/catatan');
-});
 
-Route::get('/setting', function () {
+})->middleware('auth');
 
-    if (!Session::get('user')) {
-        return redirect('/');
-    }
+Route::post('/catatan/delete/{id}', function ($id) {
 
-    $users = DB::table('users')->get();
+    DB::table('catatan')->where('id', $id)->delete();
+    return back();
+})->middleware('auth');
 
-    return view('setting', compact('users'));
-});
+Route::get('/user', function () {
+    $data = DB::table('users')->get();
+    return view('user', compact('data'));
+})->middleware('auth');
 
-Route::post('/setting/store', function (Request $request) {
+Route::post('/user', function (Request $request) {
 
     DB::table('users')->insert([
         'name' => $request->name,
         'email' => $request->email,
-        'password' => Hash::make($request->password)
+        'password' => Hash::make($request->password),
+        'created_at' => now(),
+        'updated_at' => now()
     ]);
+    return redirect('/user');
+})->middleware('auth');
 
-    return back()->with('success', 'User berhasil ditambahkan');
-});
+Route::post('/user/update/{id}', function (Request $request, $id) {
 
-// DELETE USER
-Route::get('/setting/delete/{id}', function ($id) {
+    $user = DB::table('users')->where('id', $id)->first();
 
+    DB::table('users')->where('id', $id)->update([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => $request->password
+            ? Hash::make($request->password)
+            : $user->password,
+        'updated_at' => now()
+    ]);
+    return redirect('/user')->with('success', 'User berhasil diupdate');
+})->middleware('auth');
+
+Route::post('/user/delete/{id}', function ($id) {
     DB::table('users')->where('id', $id)->delete();
-
-    return back()->with('success', 'User berhasil dihapus');
-});
+    return back();
+})->middleware('auth');

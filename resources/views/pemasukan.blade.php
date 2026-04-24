@@ -111,6 +111,7 @@
     <a href="/pemasukan" class="active"><strong>Pemasukan</strong></a>
     <a href="/pengeluaran">Pengeluaran</a>
     <a href="/catatan">Catatan</a>
+    <a href="/user">User</a>
 </div>
 
 <div class="main">
